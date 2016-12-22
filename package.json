@@ -1,0 +1,30 @@
+{
+  "name": "node-v7.3.0-documentation",
+  "version": "0.0.0",
+  "description": "nodejs 文档 v7.3.0 中文版",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tao-Quixote/node-v7.3.0-documentation-cn.git"
+  },
+  "keywords": [
+    "nodejs",
+    "documentation",
+    "文档",
+    "v7.3.0",
+    "中文版"
+  ],
+  "author": "Tao-Quixote",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tao-Quixote/node-v7.3.0-documentation-cn/issues"
+  },
+  "homepage": "https://github.com/Tao-Quixote/node-v7.3.0-documentation-cn#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "pug": "^2.0.0-beta6"
+  }
+}
