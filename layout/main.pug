@@ -1,0 +1,15 @@
+doctype html
+html(lang="en")
+	head
+		meta(charset="utf-8")
+		title #{title} | Node.js v7.3.0 Documentation
+		link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic")
+		link(rel="stylesheet", href="assets/style.css")
+		link(rel="stylesheet", href="assets/sh.css")
+	body.alt.apidoc(id="api-section-"+title)
+		div#content.clearfix
+			include column2
+			include column1
+		script(src="assets/sh_main.js")
+		script(src="assets/sh_javascript.min.js")
+		script higlight(undefined, undefined, 'pre');
