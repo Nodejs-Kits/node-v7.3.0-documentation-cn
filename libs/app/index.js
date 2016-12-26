@@ -72,7 +72,7 @@ exports = module.exports = {
 		// set seiries
 		app.set('views', './views');
 		app.set('view engine', 'pug');
-		app.set('PORT', process.env.PORT || 3001);
+		app.set('PORT', process.env.PORT || 80);
 		
 		// static resources
 		app.use(express.static('./static'));
