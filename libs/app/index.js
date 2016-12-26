@@ -40,8 +40,13 @@ function addRoutes(app) {
 				console.log("file " + file + ".pug is not exists.");
 				next();
 			} else {
+				// handle the name of the documentation
+				var arr = file.split('');
+				arr[0] = arr[0].toUpperCase();
+				var title = arr.join('');
+				
 				res.render('apis/' + file, {
-					title: file
+					title: title
 				});
 			}
 		});
