@@ -1,55 +1,68 @@
 var express = require('../../node_modules/express');
+var ejs = require('../../node_modules/ejs');
 var fs = require('fs');
 
-function addRoutes(app) {
-	// home page
-	app.get('/', function (req, res) {
-		res.render('apis/index', {
-			title: "index"
-		});
+exports = module.exports = {
+	init: function (app) {
+		// set seiries
+		app.set('views', './views');
+		app.engine('html', ejs.__express);
+		app.set('view engine', 'html');
+		app.set('PORT', process.env.PORT || 80);
+		
+		// static resources
+		app.use(express.static('./static'));
+		
+		// disabled
+		app.disable('x-powered-by');
+	},
+	addRoutes: addRoutes
+}
+
+function handleHtml(path, res,next) {
+	var file = path.split('/')[1];
+	fs.access('./views/html/' + file, fs.constants.R_OK, err => {
+		if(err) {
+			console.log('err: ' + err);
+			next();
+		} else {
+			res.render('html/' + file);
+		}
 	});
-	
-	// all.json page
-	app.get('/all.json', function (req, res) {
-		fs.access('./views/apis/all.json', fs.constants.R_OK, (err) => {
-			if(err) {
-				console.log('accessing file ./views/apis/all.json, permission denied.');
-				next();
-			} else {
-				fs.readFile('./views/apis/all.json', (err, data) => {
-					if(err) {
-						console.log('read error');
-						next();
-					} else {
-						res.status(200);
-						res.type('text/palin');
-						res.send(data);
-					}
-				});
-			}
-		});
-	})
-	
-	// all
+}
+
+function handleJson(path, res, next) {
+	var file = path.split('/')[1];
+	res.set('Content-Type', 'text/json');
+	fs.access('./views/json/' + file, fs.constants.R_OK, err => {
+		if(err) {
+			console.log('err: ' + err);
+			next();
+		} else {
+			fs.readFile('./views/json/' + file, (err, data) => {
+				if(err) {
+					console.log('err: ' + err);
+					next();
+				} else {
+					res.send(data);
+				}
+			})
+		}
+	});
+}
+
+function addRoutes(app) {
 	app.all('/*', function (req, res, next) {
 		var path = req.path;
-		var file = path.replace('/', '');
-		var pathToFile = './views/apis/' + file;
-		fs.access(pathToFile + '.pug', fs.constants.R_OK, (err) => {
-			if(err) {
-				console.log("file " + file + ".pug is not exists.");
-				next();
-			} else {
-				// handle the name of the documentation
-				var arr = file.split('');
-				arr[0] = arr[0].toUpperCase();
-				var title = arr.join('');
-				
-				res.render('apis/' + file, {
-					title: title
-				});
-			}
-		});
+		if(path === '/') {
+			res.render('html/index.html');
+		} else if(path.match(/\.html$/)) {
+			handleHtml(path, res, next);
+		} else if(path.match(/\.json$/)) {
+			handleJson(path, res, next);
+		} else {
+			next();
+		}
 	});
 	
 	// Page 404
@@ -70,20 +83,4 @@ function addRoutes(app) {
 			title: "Internal Server Error"
 		});
 	});
-}
-
-exports = module.exports = {
-	init: function (app) {
-		// set seiries
-		app.set('views', './views');
-		app.set('view engine', 'pug');
-		app.set('PORT', process.env.PORT || 80);
-		
-		// static resources
-		app.use(express.static('./static'));
-		
-		// disabled
-		app.disable('x-powered-by');
-	},
-	addRoutes: addRoutes
 }

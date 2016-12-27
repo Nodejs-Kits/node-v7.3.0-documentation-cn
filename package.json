@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Tao-Quixote/node-v7.3.0-documentation-cn#readme",
   "dependencies": {
+    "ejs": "^2.5.5",
     "express": "^4.14.0"
   }
 }
