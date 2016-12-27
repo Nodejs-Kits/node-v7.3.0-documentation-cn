@@ -37,4 +37,4 @@ Server running at http://127.0.0.1:3000/
 文档中所有的示例都可以通过类似的方法运行。
 
 [命令行选项]: cli.html#cli_command_line_options
-[web server]: http.html
+[web服务器]: http.html
