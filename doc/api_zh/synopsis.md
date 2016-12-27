@@ -1,16 +1,14 @@
-# Usage
+# 用法
 
 <!--type=misc-->
 
 `node [options] [v8 options] [script.js | -e "script"] [arguments]`
 
-Please see the [Command Line Options][] document for information about
-different options and ways to run scripts with Node.js.
+获取更多使用Node.js不同选项和不同方法运行脚本的信息，请查阅[命令行选项][]文档。
 
-## Example
+## 示例
 
-An example of a [web server][] written with Node.js which responds with
-`'Hello World'`:
+下面的例子使用Node.js实现了一个简单[web服务器][]，返回`'Hello World'`：
 
 ```js
 const http = require('http');
@@ -29,15 +27,14 @@ server.listen(port, hostname, () => {
 });
 ```
 
-To run the server, put the code into a file called `example.js` and execute
-it with Node.js:
+将上面的代码放到`example.js`文件中的，在命令行中通过执行如下代码运行该服务器:
 
 ```txt
 $ node example.js
 Server running at http://127.0.0.1:3000/
 ```
 
-All of the examples in the documentation can be run similarly.
+文档中所有的示例都可以通过类似的方法运行。
 
-[Command Line Options]: cli.html#cli_command_line_options
+[命令行选项]: cli.html#cli_command_line_options
 [web server]: http.html
