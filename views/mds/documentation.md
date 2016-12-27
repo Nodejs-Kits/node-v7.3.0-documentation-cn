@@ -19,24 +19,14 @@
   <h1>About this Documentation<span><a class="mark" href="#documentation_about_this_documentation"
                                        id="documentation_about_this_documentation">#</a></span></h1>
   <!-- type=misc -->
-  <p>The goal of this documentation is to comprehensively explain the Node.js
-    API, both from a reference as well as a conceptual point of view. Each
-    section describes a built-in module or high-level concept.</p>
+  <p>这些文档的目标是从引用以及理念两个方面系统地阐述Node.js API，每个部分都描述了一个内建模块或者高级理念。</p>
   <p>Where appropriate, property types, method arguments, and the arguments
     provided to event handlers are detailed in a list underneath the topic
     heading.</p>
-  <p>Every <code>.html</code> document has a corresponding <code>.json</code> document presenting
-    the same information in a structured manner. This feature is
-    experimental, and added for the benefit of IDEs and other utilities that
-    wish to do programmatic things with the documentation.</p>
-  <p>Every <code>.html</code> and <code>.json</code> file is generated based on the corresponding
-    <code>.md</code> file in the <code>doc/api/</code> folder in Node.js&#39;s source tree. The
-    documentation is generated using the <code>tools/doc/generate.js</code> program.
-    The HTML template is located at <code>doc/template.html</code>.</p>
-  <p>If you find an error in this documentation, please <a href="https://github.com/nodejs/node/issues/new">submit an
-    issue</a>
-    or see <a href="https://github.com/nodejs/node/blob/master/CONTRIBUTING.md">the contributing guide</a> for
-    directions on how to submit a patch.</p>
+  <p></p>
+	<p>每一个<code>.html</code>文档都一个相关联的<code>.json</code>文档以结构化的方式来描述相同的信息。这个特点是试验性的，主要是为了方便IDEs或者其他工具利用这些文档做一些纲领性的事情。</p>
+  <p>每个<code>.html</code>和<code>.json</code>文件都是基于Node.js资源树中<code>doc/api</code>目录下相关联的<code>.md</code>文件生成的。文档由<code>tools/doc/generate.js</code>程序生成。HTML模版保存在<code>doc/template.html</code>中。</p>
+  <p>如果在阅读中发现任何错误，请<a href="https://github.com/nodejs/node/issues/new">提交问题</a>或者查看<a href="https://github.com/nodejs/node/blob/master/CONTRIBUTING.md">贡献指南</a>查找如何提交补丁。</p>
   <h2>Stability Index<span><a class="mark" href="#documentation_stability_index"
                               id="documentation_stability_index">#</a></span></h2>
   <!--type=misc-->

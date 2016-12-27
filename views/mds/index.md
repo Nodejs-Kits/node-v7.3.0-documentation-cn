@@ -5,10 +5,10 @@
 	<!-- [start-include:_toc.md] -->
 	<ul>
 		<li>
-			<a href="documentation">About these Docs</a>
+			<a href="documentation">关于文档</a>
 		</li>
 		<li>
-			<a href="synopsis">Usage &amp; Example</a>
+			<a href="synopsis">用法 &amp; 示例</a>
 		</li>
 	</ul>
 	<div class="line"></div>
