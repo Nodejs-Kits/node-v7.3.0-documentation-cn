@@ -1,13 +1,10 @@
-# Global Objects
+# 全局对象
 
 <!-- type=misc -->
 
-These objects are available in all modules. Some of these objects aren't
-actually in the global scope but in the module scope - this will be noted.
+全局对象在所有模块中都是可用的，无需require。需要注意的是 -- 全局对象中的一部分对象并不是真的在全局作用域中，而是在模块的作用域中。
 
-The objects listed here are specific to Node.js. There are a number of
-[built-in objects][] that are part of the JavaScript language itself, which are
-also globally accessible.
+这里列出的对象都是特指Node.js中的对象。一些[内建对象][]是JavaScript语言的一部分，可以在全局作用域中调用。
 
 ## Class: Buffer
 <!-- YAML
@@ -18,7 +15,7 @@ added: v0.1.103
 
 * {Function}
 
-Used to handle binary data. See the [buffer section][].
+用来操作二进制数据。详情查看[buffer section][]。
 
 ## \_\_dirname
 <!-- YAML
@@ -29,26 +26,25 @@ added: v0.1.27
 
 * {String}
 
-The name of the directory that the currently executing script resides in.
+当前执行脚本的目录的名字。
 
-Example: running `node example.js` from `/Users/mjr`
+示例: 在`/Users/tx`目录下执行`node example.js`
 
 ```js
 console.log(__dirname);
-// Prints: /Users/mjr
+// Prints: /Users/tx
 ```
 
 `__dirname` isn't actually a global but rather local to each module.
 
-For instance, given two modules: `a` and `b`, where `b` is a dependency of
-`a` and there is a directory structure of:
+`__dirname`并非是真正的全局属性，每一个模块都有一个局部的`__dirname`。
 
-* `/Users/mjr/app/a.js`
-* `/Users/mjr/app/node_modules/b/b.js`
+例如，有两个模块：`a` 和 `b`，模块`b`是模块`a`的依赖；目录结构如下：
 
-References to `__dirname` within `b.js` will return
-`/Users/mjr/app/node_modules/b` while references to `__dirname` within `a.js`
-will return `/Users/mjr/app`.
+* `/Users/tx/app/a.js`
+* `/Users/tx/app/node_modules/b/b.js`
+
+在`b.js`中调用`__dirname`会返回`/Users/tx/app/node_modules/b`，而在`a.js`中调用`__dirname`返回`/Users/tx/app`。
 
 ## \_\_filename
 <!-- YAML
@@ -59,19 +55,16 @@ added: v0.0.1
 
 * {String}
 
-The filename of the code being executed.  This is the resolved absolute path
-of this code file.  For a main program this is not necessarily the same
-filename used in the command line.  The value inside a module is the path
-to that module file.
+当前执行代码所在文件的文件名。是当前执行代码所在文件解析后的绝对路径。对于一个主函数来说，该对象的值并不一定同在命令行中使用时一样(**译注：**例如，可以使用```node example.js```命令来执行```example.js```文件, 也可以通过```node example```命令来执行```example.js```文件)。在模块中调用此对象返回的值为该模块的绝对路径。
 
-Example: running `node example.js` from `/Users/mjr`
+示例: 在`/Users/tx`目录下执行`node example.js`命令：
 
 ```js
 console.log(__filename);
-// Prints: /Users/mjr/example.js
+// Prints: /Users/tx/example.js
 ```
 
-`__filename` isn't actually a global but rather local to each module.
+同`__dirname`，`__filename`并不是一个真正的全局属性，每一个模块都有一个局部的`__filename`。
 
 ## clearImmediate(immediateObject)
 <!-- YAML
@@ -80,7 +73,7 @@ added: v0.9.1
 
 <!--type=global-->
 
-[`clearImmediate`] is described in the [timers][] section.
+[`clearImmediate`]在[timers][](定时器)部分有详细描述。
 
 ## clearInterval(intervalObject)
 <!-- YAML
@@ -89,7 +82,7 @@ added: v0.0.1
 
 <!--type=global-->
 
-[`clearInterval`] is described in the [timers][] section.
+[`clearInterval`]在[timers][](定时器)部分有详细描述。
 
 ## clearTimeout(timeoutObject)
 <!-- YAML
@@ -98,7 +91,7 @@ added: v0.0.1
 
 <!--type=global-->
 
-[`clearTimeout`] is described in the [timers][] section.
+[`clearTimeout`]在[timers][](定时器)部分有详细描述。
 
 ## console
 <!-- YAML
@@ -109,7 +102,7 @@ added: v0.1.100
 
 * {Object}
 
-Used to print to stdout and stderr. See the [`console`][] section.
+用来打印信息到标准输出和标准错误。详情请查看[`console`][]部分。
 
 ## exports
 <!-- YAML
@@ -118,13 +111,11 @@ added: v0.1.12
 
 <!-- type=var -->
 
-A reference to the `module.exports` that is shorter to type.
-See [module system documentation][] for details on when to use `exports` and
-when to use `module.exports`.
+`module.exports`属性的引用，方便拼写。`exports`和`module.exports`在什么情况下使用以及区别请查阅[module system documentation][]部分的文档。
 
-`exports` isn't actually a global but rather local to each module.
+`exports`并不是真正的全局属性，而是每个模块的局部属性。
 
-See the [module system documentation][] for more information.
+详情请查阅[module system documentation][]部分的文档。
 
 ## global
 <!-- YAML
@@ -133,12 +124,9 @@ added: v0.1.27
 
 <!-- type=global -->
 
-* {Object} The global namespace object.
+* {Object} The global namespace object(全局命名空间对象).
 
-In browsers, the top-level scope is the global scope. That means that in
-browsers if you're in the global scope `var something` will define a global
-variable. In Node.js this is different. The top-level scope is not the global
-scope; `var something` inside an Node.js module will be local to that module.
+在浏览器中，顶级作用域是全局作用域。就是说如果你在浏览器的全局作用域中写`var something`，会定义一个全局变量。但是在Node.js中，顶级作用域不是全局作用域；在一个Node.js模块中声明`var something`，则该变了被声明为这个模块的局部变量。
 
 ## module
 <!-- YAML
@@ -149,13 +137,11 @@ added: v0.1.16
 
 * {Object}
 
-A reference to the current module. In particular
-`module.exports` is used for defining what a module exports and makes
-available through `require()`.
+对当前模块的引用。`module.exports`特别是用来定义一个模块的导出项以及使导出项可通过`require()`方法使用。
 
-`module` isn't actually a global but rather local to each module.
+`module`并不是真正的全局对象，而是属于每一个模块的局部变量(或者说是对象)。
 
-See the [module system documentation][] for more information.
+更多信息请查阅[module system documentation][]部分的文档。
 
 ## process
 <!-- YAML
@@ -166,7 +152,7 @@ added: v0.1.7
 
 * {Object}
 
-The process object. See the [`process` object][] section.
+process对象。详情请查阅[`process` object][]部分的文档。
 
 ## require()
 <!-- YAML
@@ -177,8 +163,7 @@ added: v0.1.13
 
 * {Function}
 
-To require modules. See the [Modules][] section.  `require` isn't actually a
-global but rather local to each module.
+用来引入模块，详情请查看[Modules][]部分的文档。`require`并不是真正的全局对象，而是属于每个模块的局部变量。
 
 ### require.cache
 <!-- YAML
@@ -275,4 +260,4 @@ added: v0.0.1
 [`setImmediate`]: timers.html#timers_setimmediate_callback_args
 [`setInterval`]: timers.html#timers_setinterval_callback_delay_args
 [`setTimeout`]: timers.html#timers_settimeout_callback_delay_args
-[built-in objects]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+[内建对象]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
