@@ -17,7 +17,14 @@ renderer.heading = function(text, level) {
   return '<h' + level + '>' + text + '</h' + level + '>\n';
 };
 marked.setOptions({
-  renderer: renderer
+  renderer: renderer,
+  gfm         : true,
+  tables      : true,
+  breaks      : true,
+  pedantic    : false,
+  sanitize    : false,
+  smartLists  : true,
+  smartypants : false
 });
 
 // TODO(chrisdickinson): never stop vomitting / fix this.
@@ -59,6 +66,7 @@ function toHTML(opts, cb) {
   }
 
   function onGtocLoaded() {
+    // todo lexed is something like in lexed.js, in current folder
     var lexed = marked.lexer(opts.input);
     fs.readFile(template, 'utf8', function(er, template) {
       if (er) return cb(er);
@@ -132,6 +140,8 @@ function render(opts, cb) {
     // the lexed tokens, because it's destructive.
     const content = marked.parser(lexed);
     template = template.replace(/__CONTENT__/g, content);
+    // delete the <br> tag
+    template = template.replace(/<br>/g, '');
 
     cb(null, template);
   });
@@ -296,6 +306,7 @@ function linkJsTypeDocs(text) {
   return parts.join('`');
 }
 
+// 文档稳定性样式添加
 function parseAPIHeader(text) {
   text = text.replace(
     STABILITY_TEXT_REG_EXP,
