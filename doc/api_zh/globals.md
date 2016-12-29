@@ -26,7 +26,7 @@ added: v0.1.27
 
 * {String}
 
-当前执行脚本的目录的名字。
+当前执行脚本所在目录的名字。
 
 示例: 在`/Users/tx`目录下执行`node example.js`
 
@@ -172,10 +172,7 @@ added: v0.3.0
 
 * {Object}
 
-Modules are cached in this object when they are required. By deleting a key
-value from this object, the next `require` will reload the module. Note that
-this does not apply to [native addons][], for which reloading will result in an
-Error.
+模块在被引用时缓存在该对象中。通过删除该对象中的键值对，下一次`require`时会重新加载该模块。注意，该方法不适用于[native addons][]，重新加载会导致错误。
 
 ### require.extensions
 <!-- YAML
@@ -187,38 +184,28 @@ deprecated: v0.10.6
 
 * {Object}
 
-Instruct `require` on how to handle certain file extensions.
+指导`require`如何处理特定后缀的文件。
 
-Process files with the extension `.sjs` as `.js`:
+将`.sjs`后缀的文件当作`.js`后缀的文件来处理：
 
 ```js
 require.extensions['.sjs'] = require.extensions['.js'];
 ```
 
-**Deprecated**  In the past, this list has been used to load
-non-JavaScript modules into Node.js by compiling them on-demand.
-However, in practice, there are much better ways to do this, such as
-loading modules via some other Node.js program, or compiling them to
-JavaScript ahead of time.
+**Deprecated** 原来，这个方法用来将非Javascript模块按需编译加载进Node.js中。然而，在实践中，有更好的办法来做这件事情，比如说通过其他Node.js程序加载，或者提前编译进JavaScript中。
 
-Since the module system is locked, this feature will probably never go
-away.  However, it may have subtle bugs and complexities that are best
-left untouched.
+由于模块系统现在的状态是锁定的(locked)，所以这个特性可能不会移除。这个特性可能会导致奇怪的或者复杂的bug，所以最好不要使用。
 
-Note that the number of file system operations that the module system
-has to perform in order to resolve a `require(...)` statement to a
-filename scales linearly with the number of registered extensions.
+需要注意的是：模块系统解析一个`require(...)`语句为文件名的过程中必须执行的文件系统操作数与注册扩展名的数量成线性比例。(**译注：即要注册的扩展名越多，模块系统要解析道文件系统操作数就越多，注册的扩展名越多，文件操作越多，性能越差。**)
 
-In other words, adding extensions slows down the module loader and
-should be discouraged.
+添加新的扩展名会拖慢模块加载器，所以不推荐使用。
 
 ### require.resolve()
 <!-- YAML
 added: v0.3.0
 -->
 
-Use the internal `require()` machinery to look up the location of a module,
-but rather than loading the module, just return the resolved filename.
+使用内置的`require()`机制查找模块的位置，但是并不会加载模块，而是返回解析后的文件名。
 
 ## setImmediate(callback[, ...args])
 <!-- YAML
@@ -227,7 +214,7 @@ added: v0.9.1
 
 <!-- type=global -->
 
-[`setImmediate`] is described in the [timers][] section.
+[`setImmediate`]在[timers][](定时器)部分有详细描述。
 
 ## setInterval(callback, delay[, ...args])
 <!-- YAML
@@ -236,7 +223,7 @@ added: v0.0.1
 
 <!-- type=global -->
 
-[`setInterval`] is described in the [timers][] section.
+[`setInterval`]在[timers][](定时器)部分有详细描述。
 
 ## setTimeout(callback, delay[, ...args])
 <!-- YAML
@@ -245,7 +232,7 @@ added: v0.0.1
 
 <!-- type=global -->
 
-[`setTimeout`] is described in the [timers][] section.
+[`setTimeout`]在[timers][](定时器)部分有详细描述。
 
 [`console`]: console.html
 [`process` object]: process.html#process_process
