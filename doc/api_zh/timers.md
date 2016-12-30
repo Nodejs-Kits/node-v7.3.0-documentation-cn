@@ -40,7 +40,7 @@ added: v0.9.1
 
 返回一个`Timeout`的引用。
 
-## Scheduling Timers
+## Scheduling Timers(设置定时器)
 
 定时器是Node.js的内部结构，该结构在一个特定的时间点后会调用给定的回调函数。定时器的回调函数什么时候被调用取决于使用什么方法创建定时器以及Node.js事件循环正在处理别的什么工作(**译注：**例如使用`setInterval`方法设置的定时器会每隔一定时间执行一次，而使用`setTimeout`方法在指定时间后只执行一次；如果同时有I/O事件或者`setImmediate()`设置的回调，则依次执行前两个的回调，然后执行`setInterval` or `setTimeout`设置的回调)。
 
