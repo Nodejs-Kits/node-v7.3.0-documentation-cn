@@ -1,23 +1,21 @@
-# Modules
+# Modules(模块)
 
 > Stability: 3 - Locked
 
 <!--name=module-->
 
-Node.js has a simple module loading system.  In Node.js, files and modules
-are in one-to-one correspondence (each file is treated as a separate module).
+Node.js有一个简单的模块加载系统。在Node.js中，文件和模块是一一对应的(每个文件都被当成是独立的模块对待)。
 
-As an example, consider a file named `foo.js`:
+例如, 考虑有这么一个文件`foo.js`:
 
 ```js
 const circle = require('./circle.js');
 console.log(`The area of a circle of radius 4 is ${circle.area(4)}`);
 ```
 
-On the first line, `foo.js` loads the module `circle.js` that is in the same
-directory as `foo.js`.
+在第一行中，`foo.js`文件加载了同一目录下的模块`circle.js`。
 
-Here are the contents of `circle.js`:
+下面是`circle.js`文件的内容：
 
 ```js
 const PI = Math.PI;
@@ -27,20 +25,13 @@ exports.area = (r) => PI * r * r;
 exports.circumference = (r) => 2 * PI * r;
 ```
 
-The module `circle.js` has exported the functions `area()` and
-`circumference()`.  To add functions and objects to the root of your module,
-you can add them to the special `exports` object.
+`circle.js`模块向外暴露`area()`和`circumference()`方法。可以通过向特殊对象`exports`中添加函数和对象达到向自定义模块的根添加方法和对象的目的。
 
-Variables local to the module will be private, because the module is wrapped
-in a function by Node.js (see [module wrapper](#modules_the_module_wrapper)).
-In this example, the variable `PI` is private to `circle.js`.
+因为模块会被Node.js封装在函数中，所以模块中定义的变量是私有的(详情请查看[module wrapper](#modules_the_module_wrapper))。在这个例子中，变量`PI`是`circle.js`模块的私有变量。
 
-If you want the root of your module's export to be a function (such as a
-constructor) or if you want to export a complete object in one assignment
-instead of building it one property at a time, assign it to `module.exports`
-instead of `exports`.
+如果你想模块向外部暴露的是一个函数(比如构造器)，或者你想向外部暴露一个单纯的一次构建好的对象，而不是一次一次地向其中添加属性，那么将这个函数或者对象赋值给`module.exports`而不是赋值给`exports`。
 
-Below, `bar.js` makes use of the `square` module, which exports a constructor:
+下面的例子中，`bar.js`中使用了`square`模块，该模块导出的是一个构造器：
 
 ```js
 const square = require('./square.js');
@@ -48,7 +39,7 @@ var mySquare = square(2);
 console.log(`The area of my square is ${mySquare.area()}`);
 ```
 
-The `square` module is defined in `square.js`:
+`square`模块定义在`square.js`文件中：
 
 ```js
 // assigning to exports will not modify module, must use module.exports
@@ -59,26 +50,21 @@ module.exports = (width) => {
 }
 ```
 
-The module system is implemented in the `require("module")` module.
+模块系统是在`require("module")`模块中实现的。
 
-## Accessing the main module
+## Accessing the main module(访问主模块)
 
 <!-- type=misc -->
 
-When a file is run directly from Node.js, `require.main` is set to its
-`module`. That means that you can determine whether a file has been run
-directly by testing
+当通过Node.js直接运行一个文件时，`require.main`被设置为该文件的`module`。这意味着你可以通过下面的测试来知道一个文件是否是被Node.js直接运行的。
 
 ```js
 require.main === module
 ```
 
-For a file `foo.js`, this will be `true` if run via `node foo.js`, but
-`false` if run by `require('./foo')`.
+对于`foo.js`文件，如果是通过`node foo.js`来执行的，结果为`true`；如果是通过`require('./foo')`加载则结果为`false`。
 
-Because `module` provides a `filename` property (normally equivalent to
-`__filename`), the entry point of the current application can be obtained
-by checking `require.main.filename`.
+因为`module`提供了一个`filename`属性(通常等价于`__filename`)，当前应用的入口文件可以通过检查`require.main.filename`属性的值来获得。
 
 ## Addenda: Package Manager Tips
 
