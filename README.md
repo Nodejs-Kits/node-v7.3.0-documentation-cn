@@ -2,6 +2,17 @@
 
 这是nodejs v7.3.0中文版文档。翻译源文档(.md文件)来自Node.js官方git项目。
 
+## 已翻译模块文档
+
+* Usage & Example
+
+****
+
+* Globals
+* Modules(Not Finished)
+* OS
+* Timers
+
 ## 目录介绍
 
 ### doc目录

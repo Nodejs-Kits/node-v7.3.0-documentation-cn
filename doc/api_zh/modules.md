@@ -66,30 +66,19 @@ require.main === module
 
 因为`module`提供了一个`filename`属性(通常等价于`__filename`)，当前应用的入口文件可以通过检查`require.main.filename`属性的值来获得。
 
-## Addenda: Package Manager Tips
+## Addenda: Package Manager Tips(附录：包管理器提示)
 
 <!-- type=misc -->
 
-The semantics of Node.js's `require()` function were designed to be general
-enough to support a number of reasonable directory structures. Package manager
-programs such as `dpkg`, `rpm`, and `npm` will hopefully find it possible to
-build native packages from Node.js modules without modification.
+Node.js中`require()`方法的语义被设计的足够普遍，足以支持许多合理的目录结构。包管理程序，比如`dpkg`, `rpm`, 和 `npm`有望在不做修改的情况下从Node.js模块中构建本地包。
 
-Below we give a suggested directory structure that could work:
+下面我们给出一个建议的目录结构：
 
-Let's say that we wanted to have the folder at
-`/usr/lib/node/<some-package>/<some-version>` hold the contents of a
-specific version of a package.
+比如说我们想在目录`/usr/lib/node/<some-package>/<some-version>`中存放一个包的特定版本的内容。
 
-Packages can depend on one another. In order to install package `foo`, you
-may have to install a specific version of package `bar`.  The `bar` package
-may itself have dependencies, and in some cases, these dependencies may even
-collide or form cycles.
+包之间可以相互依赖。为了安装包`foo`，或许你还要安装特定版本的包`bar`。包`bar`可能也有自己的依赖，在一些情况下，这些依赖甚至是重叠的或者是循环依赖的。
 
-Since Node.js looks up the `realpath` of any modules it loads (that is,
-resolves symlinks), and then looks for their dependencies in the `node_modules`
-folders as described [here](#modules_loading_from_node_modules_folders), this
-situation is very simple to resolve with the following architecture:
+因为Node.js会查找它加载的任意一个模块的`realpath(真实路径)`(),然后根据描述[here](#modules_loading_from_node_modules_folders)在`node_modules`目录中查找它们的依赖，这种情况可以通过使用下面的结构来轻易的解决。
 
 * `/usr/lib/node/foo/1.2.3/` - Contents of the `foo` package, version 1.2.3.
 * `/usr/lib/node/bar/4.3.2/` - Contents of the `bar` package that `foo`
@@ -99,36 +88,21 @@ situation is very simple to resolve with the following architecture:
 * `/usr/lib/node/bar/4.3.2/node_modules/*` - Symbolic links to the packages
   that `bar` depends on.
 
-Thus, even if a cycle is encountered, or if there are dependency
-conflicts, every module will be able to get a version of its dependency
-that it can use.
+因此，即使遇到循环依赖，或者如果存在依赖冲突，每个模块都能获得一个可用的版本的依赖。
 
-When the code in the `foo` package does `require('bar')`, it will get the
-version that is symlinked into `/usr/lib/node/foo/1.2.3/node_modules/bar`.
-Then, when the code in the `bar` package calls `require('quux')`, it'll get
-the version that is symlinked into
-`/usr/lib/node/bar/4.3.2/node_modules/quux`.
+当`foo`包中的代码执行`require('bar')`时，它将获取到符号链接指向的`/usr/lib/node/foo/1.2.3/node_modules/bar`中的版本。然后，当`bar`包中的代码调用`require('quux')`时，它将获取到符号链接指向的`/usr/lib/node/bar/4.3.2/node_modules/quux`中的版本。
 
-Furthermore, to make the module lookup process even more optimal, rather
-than putting packages directly in `/usr/lib/node`, we could put them in
-`/usr/lib/node_modules/<name>/<version>`.  Then Node.js will not bother
-looking for missing dependencies in `/usr/node_modules` or `/node_modules`.
+此外，为了使模块查找过程更加优化，我们可以将模块放在`/usr/lib/node_modules/<name>/<version>`中而不是直接将包放在`/usr/lib/node`中。然后Node.js将不会在`/usr/node_modules`或`/node_modules`中查找依赖(依赖项并不在这两个目录中)。
 
-In order to make modules available to the Node.js REPL, it might be useful to
-also add the `/usr/lib/node_modules` folder to the `$NODE_PATH` environment
-variable.  Since the module lookups using `node_modules` folders are all
-relative, and based on the real path of the files making the calls to
-`require()`, the packages themselves can be anywhere.
+为了使模块对于Node.js REPL可用，将`/usr/lib/node_modules`目录也添加到`$NODE_PATH`环境变量中将会有作用。因为使用`node_modules`目录的模块查找都是相对的，并基于调用`require()`方法的文件的真实路径，所以这些包可以在任何地方。
 
 ## All Together...
 
 <!-- type=misc -->
 
-To get the exact filename that will be loaded when `require()` is called, use
-the `require.resolve()` function.
+可以使用`require.resolve()`方法来获取`require()`方法被调用时加载文件的确切的文件名。
 
-Putting together all of the above, here is the high-level algorithm
-in pseudocode of what require.resolve does:
+综上所述，下面是用伪代码写的高级算法来解释require.resolve到底做了什么：
 
 ```txt
 require(X) from module at path Y
@@ -174,60 +148,41 @@ NODE_MODULES_PATHS(START)
 5. return DIRS
 ```
 
-## Caching
+## Caching(缓存)
 
 <!--type=misc-->
 
-Modules are cached after the first time they are loaded.  This means
-(among other things) that every call to `require('foo')` will get
-exactly the same object returned, if it would resolve to the same file.
+模块在第一次加载后会被缓存。也就是说(除了别的以外)如果`require`方法解析了同一个文件，那每次调用`require('foo')`都将获得完全相同的返回对象。
 
-Multiple calls to `require('foo')` may not cause the module code to be
-executed multiple times.  This is an important feature.  With it,
-"partially done" objects can be returned, thus allowing transitive
-dependencies to be loaded even when they would cause cycles.
+多次调用`require('foo')`时模块的代码并不会重复执行。这是一个很重要的特性。有了这个特性，“部分完成”的对象可以被返回，从而允许传递依赖也能被加载，即使它们可能引起循环依赖。
 
-If you want to have a module execute code multiple times, then export a
-function, and call that function.
+如果想要某个模块的代码多次执行，可以导出一个方法然后调用那个方法。
 
-### Module Caching Caveats
+### Module Caching Caveats(警告)
 
 <!--type=misc-->
 
-Modules are cached based on their resolved filename.  Since modules may
-resolve to a different filename based on the location of the calling
-module (loading from `node_modules` folders), it is not a *guarantee*
-that `require('foo')` will always return the exact same object, if it
-would resolve to different files.
+模块是基于其解析的文件名进行缓存的。由于模块基于调用模块的位置(从`node_modules`目录加载)可能会解析为不同的文件名，所以如果解析到不同的文件，则*不能保证*`require('foo')`方法总是返回相同的对象。
 
-Additionally, on case-insensitive file systems or operating systems, different
-resolved filenames can point to the same file, but the cache will still treat
-them as different modules and will reload the file multiple times. For example,
-`require('./foo')` and `require('./FOO')` return two different objects,
-irrespective of whether or not `./foo` and `./FOO` are the same file.
+另外，在大小写不敏感的文件系统或者操作系统中，解析后不同的文件名可能指向相同的文件，但是缓存依然把它们当成不同的模块从而多次重新加载该文件。例如，`require('./foo')`和`require('./FOO')`两个方法返回两个不同的对象，而不管`./foo`和`./FOO`是否是同一个文件。
 
-## Core Modules
+## Core Modules(核心模块)
 
 <!--type=misc-->
 
-Node.js has several modules compiled into the binary.  These modules are
-described in greater detail elsewhere in this documentation.
+Node.js有几个被编译成二进制的模块。这些模块在该文档点其他地方有详细的描述。
 
-The core modules are defined within Node.js's source and are located in the
-`lib/` folder.
+核心模块在Node.js的源代码中定义，位于`lib/`目录下。
 
-Core modules are always preferentially loaded if their identifier is
-passed to `require()`.  For instance, `require('http')` will always
-return the built in HTTP module, even if there is a file by that name.
+如果核心模块的标识符传递给`require()`方法则被优先加载。例如，`require('http')`总是返回内建的HTTP模块，即使有同名文件也是如此。
 
-## Cycles
+## Cycles(循环依赖)
 
 <!--type=misc-->
 
-When there are circular `require()` calls, a module might not have finished
-executing when it is returned.
+当发生循环`require()`调用时，一个模块在返回时可能还未完全执行完。
 
-Consider this situation:
+考虑下面这种情况：
 
 `a.js`:
 
@@ -260,14 +215,9 @@ const b = require('./b.js');
 console.log('in main, a.done=%j, b.done=%j', a.done, b.done);
 ```
 
-When `main.js` loads `a.js`, then `a.js` in turn loads `b.js`.  At that
-point, `b.js` tries to load `a.js`.  In order to prevent an infinite
-loop, an **unfinished copy** of the `a.js` exports object is returned to the
-`b.js` module.  `b.js` then finishes loading, and its `exports` object is
-provided to the `a.js` module.
+当`main.js`加载`a.js`时，`a.js`依次加载`b.js`。此时，`b.js`试图加载`a.js`。为了不形成死循环，一个`a.js`文件导出对象*未完成的拷贝*被返回给了`b.js`。然后`b.js`加载完成，它的`exports(导出对象)`提供给了`a.js`模块。
 
-By the time `main.js` has loaded both modules, they're both finished.
-The output of this program would thus be:
+当`main.js`加载这两个模块时，它们都执行完成。该程序的输出如下：
 
 ```txt
 $ node main.js
@@ -281,71 +231,48 @@ a done
 in main, a.done=true, b.done=true
 ```
 
-If you have cyclic module dependencies in your program, make sure to
-plan accordingly.
+如果在你的程序中有循环模块以来，请确保有相应的计划。
 
-## File Modules
-
-<!--type=misc-->
-
-If the exact filename is not found, then Node.js will attempt to load the
-required filename with the added extensions: `.js`, `.json`, and finally
-`.node`.
-
-`.js` files are interpreted as JavaScript text files, and `.json` files are
-parsed as JSON text files. `.node` files are interpreted as compiled addon
-modules loaded with `dlopen`.
-
-A required module prefixed with `'/'` is an absolute path to the file.  For
-example, `require('/home/marco/foo.js')` will load the file at
-`/home/marco/foo.js`.
-
-A required module prefixed with `'./'` is relative to the file calling
-`require()`. That is, `circle.js` must be in the same directory as `foo.js` for
-`require('./circle')` to find it.
-
-Without a leading '/', './', or '../' to indicate a file, the module must
-either be a core module or is loaded from a `node_modules` folder.
-
-If the given path does not exist, `require()` will throw an [`Error`][] with its
-`code` property set to `'MODULE_NOT_FOUND'`.
-
-## Folders as Modules
+## File Modules(文件模块)
 
 <!--type=misc-->
 
-It is convenient to organize programs and libraries into self-contained
-directories, and then provide a single entry point to that library.
-There are three ways in which a folder may be passed to `require()` as
-an argument.
+如果没有找到跟提供的文件名一样的文件，Node.js会依次尝试加载具有如下扩展名的文件(filename+扩展名)：`.js`, `.json`,最后是`.node`.
 
-The first is to create a `package.json` file in the root of the folder,
-which specifies a `main` module.  An example package.json file might
-look like this:
+`.js`后缀的文件会被当作JavaScript文本文件解析，`.json`后缀的文件会被当作JSON文本文件解析，`.node`后缀的文件会被解析为用`dlopen`加载的编译过的附加模块。
+
+前缀为`'/'`的被请求模块是被请求文件的绝对路径。例如：`require('/home/marco/foo.js')`将会加载`/home/marco/foo.js`这个文件。
+
+前缀为`'./'`的被请求模块是相对于调用`require()`的文件的。即为了让`require('./circle')`找到`circle.js`文件，`circle.js`文件和调用它的`foo.js`文件必须要在同一目录下。
+
+如果没有前导'/', './',或'../'来标示文件，那么这个模块必须是一个核心模块或者是从`node_modules`目录加载。
+
+如果给定的目录不存在，`require()`将会抛出一个[`Error`][]，该[`Error`][]的`code`属性的值为`'MODULE_NOT_FOUND'`。
+
+## Folders as Modules(目录模块)
+
+<!--type=misc-->
+
+将程序和库组织在一个自包含的目录中，然后提供一个到该库的单个入口是很方便的。有三种方法可以将目录传递给`require()`作为参数。
+
+第一种方式是在库的根目录创建一个`package.json`文件，指定该库的主模块。下面是一个示例的package.json文件：
 
 ```json
 { "name" : "some-library",
   "main" : "./lib/some-library.js" }
 ```
 
-If this was in a folder at `./some-library`, then
-`require('./some-library')` would attempt to load
-`./some-library/lib/some-library.js`.
+如果这个文件在`./some-library`目录中，那么`require('./some-library')`将会试图加载`./some-library/lib/some-library.js`文件。
 
-This is the extent of Node.js's awareness of package.json files.
+这是Node.js对package.json文件的感知程度。
 
-Note: If the file specified by the `"main"` entry of `package.json` is missing
-and can not be resolved, Node.js will report the entire module as missing with
-the default error:
+注意：如果由`package.json`的`"main"`条目指定的文件丢失，无法解析，Node.js会认为整个模块丢失，并报一个磨人错误：
 
 ```txt
 Error: Cannot find module 'some-library'
 ```
 
-If there is no package.json file present in the directory, then Node.js
-will attempt to load an `index.js` or `index.node` file out of that
-directory.  For example, if there was no package.json file in the above
-example, then `require('./some-library')` would attempt to load:
+如果在目录中没有package.json文件，然后Node.js会尝试从该目录中加载`index.js`或者`index.node文件`。例如，如果上面的例子中没有package.json文件，那么`require('./some-library')`将会试图加载：
 
 * `./some-library/index.js`
 * `./some-library/index.node`
