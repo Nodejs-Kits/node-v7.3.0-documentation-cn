@@ -2,8 +2,7 @@
 
 > Stability: 2 - Stable
 
-The `path` module provides utilities for working with file and directory paths.
-It can be accessed using:
+`path`模块提供了处理文件和目录路径的使用工具。可以通过下面的方式获取：
 
 ```js
 const path = require('path');
@@ -11,43 +10,36 @@ const path = require('path');
 
 ## Windows vs. POSIX
 
-The default operation of the `path` module varies based on the operating system
-on which a Node.js application is running. Specifically, when running on a
-Windows operating system, the `path` module will assume that Windows-style
-paths are being used.
+`path`模块的默认操作因运行Node.js应用程序的操作系统而异。具体来说，当在Windows操作系统上运行时，`path`模块将假设正在使用Windows样式的路径。
 
-For example, using the `path.basename()` function with the Windows file path
-`C:\temp\myfile.html`, will yield different results when running on POSIX than
-when run on Windows:
+例如，使用带有Windows文件路径`C:\temp\myfile.html`的`path.basename()`方法时，在POSIX上运行时将产生和Windows上运行时不同的结果。
 
-On POSIX:
+在POSIX系统上运行:
 
 ```js
 path.basename('C:\\temp\\myfile.html');
 // Returns: 'C:\\temp\\myfile.html'
 ```
 
-On Windows:
+在Windows系统上运行:
 
 ```js
 path.basename('C:\\temp\\myfile.html');
 // Returns: 'myfile.html'
 ```
 
-To achieve consistent results when working with Windows file paths on any
-operating system, use [`path.win32`][]:
+为了在任何操作系统上使用Windows文件路径获得一致的结果，使用[`path.win32`][]：
 
-On POSIX and Windows:
+POSI和Windows:
 
 ```js
 path.win32.basename('C:\\temp\\myfile.html');
 // Returns: 'myfile.html'
 ```
 
-To achieve consistent results when working with POSIX file paths on any
-operating system, use [`path.posix`][]:
+为了在任何操作系统上使用POSIX文件路径获得一致的结果，使用[`path.posix`][]：
 
-On POSIX and Windows:
+POSI和Windows:
 
 ```js
 path.posix.basename('/tmp/myfile.html');
@@ -60,13 +52,12 @@ added: v0.1.25
 -->
 
 * `path` {String}
-* `ext` {String} An optional file extension
+* `ext` {String} 可选的文件扩展名
 * Returns: {String}
 
-The `path.basename()` methods returns the last portion of a `path`, similar to
-the Unix `basename` command.
+`path.basename()`方法返回一个`path`的最后一部分，类似于Unix中的`basename`命令。
 
-For example:
+例如:
 
 ```js
 path.basename('/foo/bar/baz/asdf/quux.html')
@@ -76,8 +67,7 @@ path.basename('/foo/bar/baz/asdf/quux.html', '.html')
 // Returns: 'quux'
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string or if `ext` is given
-and is not a string.
+如果`path`不是字符串，或者传递了参数`ext`但不是字符串类型的，Node.js将会抛出一个[`TypeError`][]错误。
 
 ## path.delimiter
 <!-- YAML
@@ -86,12 +76,12 @@ added: v0.9.3
 
 * {String}
 
-Provides the platform-specific path delimiter:
+返回每个平台特定的路径分隔符：
 
 * `;` for Windows
 * `:` for POSIX
 
-For example, on POSIX:
+例如,在POSIX系统中:
 
 ```js
 console.log(process.env.PATH)
@@ -101,7 +91,7 @@ process.env.PATH.split(path.delimiter)
 // Returns: ['/usr/bin', '/bin', '/usr/sbin', '/sbin', '/usr/local/bin']
 ```
 
-On Windows:
+在Windows系统中:
 
 ```js
 console.log(process.env.PATH)
@@ -119,17 +109,16 @@ added: v0.1.16
 * `path` {String}
 * Returns: {String}
 
-The `path.dirname()` method returns the directory name of a `path`, similar to
-the Unix `dirname` command.
+`path.dirname()`方法返回`path`的目录名字，类似于Unix中的`dirname`命令。
 
-For example:
+例如:
 
 ```js
 path.dirname('/foo/bar/baz/asdf/quux')
 // Returns: '/foo/bar/baz/asdf'
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+如果实参`path`不是字符串，将会抛出一个[`TypeError`][]错误。
 
 ## path.extname(path)
 <!-- YAML
@@ -139,13 +128,9 @@ added: v0.1.25
 * `path` {String}
 * Returns: {String}
 
-The `path.extname()` method returns the extension of the `path`, from the last
-occurrence of the `.` (period) character to end of string in the last portion of
-the `path`.  If there is no `.` in the last portion of the `path`, or if the
-first character of the basename of `path` (see `path.basename()`) is `.`, then
-an empty string is returned.
+`path.extname()`方法返回`path`的扩展名，从`.`(句点)最后一次出现的位置到`path`字符串的最后。如果`path`的最后部分(basename)没有`.`，或者`path`的basename(see `path.basename()`)是`.`，将会返回一个空的字符串。
 
-For example:
+例如:
 
 ```js
 path.extname('index.html')
@@ -164,7 +149,7 @@ path.extname('.index')
 // Returns: ''
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+如果`path`不是字符串类型则会抛出一个[`TypeError`][]错误。
 
 ## path.format(pathObject)
 <!-- YAML
@@ -179,16 +164,14 @@ added: v0.11.15
   * `ext` {String}
 * Returns: {String}
 
-The `path.format()` method returns a path string from an object. This is the
-opposite of [`path.parse()`][].
+`path.format()`方法解析给定的路径对象返回一个路径字符串。这是[`path.parse()`][]的逆过程。
 
-When providing properties to the `pathObject` remember that there are
-combinations where one property has priority over another:
+当向`pathObject`提供属性时，记住在解析生成返回值时有一个属性相对于另外一个具有更高优先级的特点。
 
-* `pathObject.root` is ignored if `pathObject.dir` is provided
-* `pathObject.ext` and `pathObject.name` are ignored if `pathObject.base` exists
+* 如果提供了`pathObject.dir`，`pathObject.root`将被忽略
+* 如果`pathObject.base`存在，`pathObject.ext`和`pathObject.name`将被忽略
 
-For example, on POSIX:
+例如,在POSIX系统中:
 
 ```js
 // If `dir`, `root` and `base` are provided,
@@ -220,7 +203,7 @@ path.format({
 // Returns: '/file.txt'
 ```
 
-On Windows:
+在Windows系统中:
 
 ```js
 path.format({
@@ -238,11 +221,11 @@ added: v0.11.2
 * `path` {String}
 * Returns: {Boolean}
 
-The `path.isAbsolute()` method determines if `path` is an absolute path.
+`path.isAbsolute()`方法用来判断一个`path`是否是绝对路径。
 
-If the given `path` is a zero-length string, `false` will be returned.
+如果给定的`path`是空字符串，则返回`false`。
 
-For example on POSIX:
+例如，在POSIX系统中:
 
 ```js
 path.isAbsolute('/foo/bar') // true
@@ -251,7 +234,7 @@ path.isAbsolute('qux/')     // false
 path.isAbsolute('.')        // false
 ```
 
-On Windows:
+在Windows系统中:
 
 ```js
 path.isAbsolute('//server')    // true
@@ -263,24 +246,21 @@ path.isAbsolute('bar/baz')     // false
 path.isAbsolute('.')           // false
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+如果`path`不是字符串，将抛出一个[`TypeError`][]错误。
 
 ## path.join([...paths])
 <!-- YAML
 added: v0.1.16
 -->
 
-* `...paths` {String} A sequence of path segments
+* `...paths` {String} 一系列路径段，详见例子
 * Returns: {String}
 
-The `path.join()` method joins all given `path` segments together using the
-platform specific separator as a delimiter, then normalizes the resulting path.
+`path.join()`方法使用平台特定分隔符作为路径分隔符将所有给定的`path`片段连接在一起，然后规范化连接后的路径。
 
-Zero-length `path` segments are ignored. If the joined path string is a
-zero-length string then `'.'` will be returned, representing the current
-working directory.
+空的`path`片段将被忽略。如果连接后的路径字符串是空字符串，将会返回`'.'`，代表当前的工作路径。
 
-For example:
+例:
 
 ```js
 path.join('/foo', 'bar', 'baz/asdf', 'quux', '..')
@@ -290,7 +270,7 @@ path.join('foo', {}, 'bar')
 // throws TypeError: Arguments to path.join must be strings
 ```
 
-A [`TypeError`][] is thrown if any of the path segments is not a string.
+如果任意一个路径段不是字符串，将抛出一个[`TypeError`][]错误。
 
 ## path.normalize(path)
 <!-- YAML
@@ -300,31 +280,27 @@ added: v0.1.23
 * `path` {String}
 * Returns: {String}
 
-The `path.normalize()` method normalizes the given `path`, resolving `'..'` and
-`'.'` segments.
+`path.normalize()`方法规范给定的`path`，同时解析`'..'`和`'.'`片段。
 
-When multiple, sequential path segment separation characters are found (e.g.
-`/` on POSIX and `\` on Windows), they are replaced by a single instance of the
-platform specific path segment separator. Trailing separators are preserved.
+当路径段中存在多个分割符时（例如，POSIX中的`/`和Windows中的`\`)，它们将会被平台特定的路径段分隔符的单个实例替换。尾随分隔符(路径最后的路径分隔符)将被保留。
 
-If the `path` is a zero-length string, `'.'` is returned, representing the
-current working directory.
+如果`path`是一个空字符串，返回值为`'.'`，表示当前的工作路径。
 
-For example on POSIX:
+例，在POSIX系统中:
 
 ```js
 path.normalize('/foo/bar//baz/asdf/quux/..')
 // Returns: '/foo/bar/baz/asdf'
 ```
 
-On Windows:
+在Windows系统中:
 
 ```js
 path.normalize('C:\\temp\\\\foo\\bar\\..\\');
 // Returns: 'C:\\temp\\foo\\'
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+如果`path`不是字符串，将返回一个[`TypeError`][]错误。
 
 ## path.parse(path)
 <!-- YAML
@@ -334,10 +310,9 @@ added: v0.11.15
 * `path` {String}
 * Returns: {Object}
 
-The `path.parse()` method returns an object whose properties represent
-significant elements of the `path`.
+`path.parse()`方法返回一个对象，该对象的属性表示`path`的重要元素。
 
-The returned object will have the following properties:
+返回值对象有如下属性：
 
 * `root` {String}
 * `dir` {String}
@@ -345,7 +320,7 @@ The returned object will have the following properties:
 * `ext` {String}
 * `name` {String}
 
-For example on POSIX:
+例如，在POSIX系统中:
 
 ```js
 path.parse('/home/user/dir/file.txt')
@@ -366,10 +341,10 @@ path.parse('/home/user/dir/file.txt')
 │ root │              │ name │ ext │
 "  /    home/user/dir / file  .txt "
 └──────┴──────────────┴──────┴─────┘
-(all spaces in the "" line should be ignored -- they are purely for formatting)
+(“”行中的所有空格都应被忽略 -- 它们只是为了格式化)
 ```
 
-On Windows:
+在Windows系统中:
 
 ```js
 path.parse('C:\\path\\dir\\file.txt')
@@ -390,10 +365,10 @@ path.parse('C:\\path\\dir\\file.txt')
 │ root │              │ name │ ext │
 " C:\      path\dir   \ file  .txt "
 └──────┴──────────────┴──────┴─────┘
-(all spaces in the "" line should be ignored -- they are purely for formatting)
+(“”行中的所有空格都应被忽略 -- 它们只是为了格式化)
 ```
 
-A [`TypeError`][] is thrown if `path` is not a string.
+如果`path`不是字符串，将会返回一个[`TypeError`][]错误。
 
 ## path.posix
 <!-- YAML

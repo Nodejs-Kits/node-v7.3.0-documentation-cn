@@ -66,7 +66,7 @@ require.main === module
 
 因为`module`提供了一个`filename`属性(通常等价于`__filename`)，当前应用的入口文件可以通过检查`require.main.filename`属性的值来获得。
 
-## Addenda: Package Manager Tips(附录：包管理器提示)
+## Addenda: Package Manager Tips(附录：包管理器小技巧)
 
 <!-- type=misc -->
 
