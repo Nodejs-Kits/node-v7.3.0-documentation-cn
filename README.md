@@ -11,7 +11,7 @@
 * Globals
 * Modules(Not Finished)
 * OS
-* Path(Not Finished)
+* Path
 * Timers
 
 ## 目录介绍
