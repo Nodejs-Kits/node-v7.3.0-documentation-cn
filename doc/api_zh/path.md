@@ -377,8 +377,7 @@ added: v0.11.15
 
 * {Object}
 
-The `path.posix` property provides access to POSIX specific implementations
-of the `path` methods.
+`path.posix`属性提供了'针对POSIX特别实现的`path`方法'的访问。
 
 ## path.relative(from, to)
 <!-- YAML
@@ -389,57 +388,47 @@ added: v0.5.0
 * `to` {String}
 * Returns: {String}
 
-The `path.relative()` method returns the relative path from `from` to `to`.
-If `from` and `to` each resolve to the same path (after calling `path.resolve()`
-on each), a zero-length string is returned.
+`path.relative()`方法返回从`from`到`to`的相对路径。如果`from`和`to`解析后为同样的路径(在调用`path.resolve()`方法分别解析之后)，将返回一个空字符串。
 
-If a zero-length string is passed as `from` or `to`, the current working
-directory will be used instead of the zero-length strings.
+如果传递给`from`或者`to`为空字符串，则将使用当前的目录的路径来替换空字符串。
 
-For example on POSIX:
+例，在POSIX系统中:
 
 ```js
 path.relative('/data/orandea/test/aaa', '/data/orandea/impl/bbb')
 // Returns: '../../impl/bbb'
 ```
 
-On Windows:
+在Windows系统中:
 
 ```js
 path.relative('C:\\orandea\\test\\aaa', 'C:\\orandea\\impl\\bbb')
 // Returns: '..\\..\\impl\\bbb'
 ```
 
-A [`TypeError`][] is thrown if neither `from` nor `to` is a string.
+如果`from`或者`to`不是字符串的话，将会抛出一个[`TypeError`][]的错误。
 
 ## path.resolve([...paths])
 <!-- YAML
 added: v0.3.4
 -->
 
-* `...paths` {String} A sequence of paths or path segments
+* `...paths` {String} 路径或者路径片段序列
 * Returns: {String}
 
-The `path.resolve()` method resolves a sequence of paths or path segments into
-an absolute path.
+`path.resolve()`方法将路径或者路径段序列解析为绝对路径。
 
-The given sequence of paths is processed from right to left, with each
-subsequent `path` prepended until an absolute path is constructed.
-For instance, given the sequence of path segments: `/foo`, `/bar`, `baz`,
-calling `path.resolve('/foo', '/bar', 'baz')` would return `/bar/baz`.
+传递的路径序列从右向左处理，每个子`path`依次添加到开头直到构建出完整的绝对路径。例如，给定的路径段的序列为`/foo`, `/bar`, `baz`，调用`path.resolve('/foo', '/bar', 'baz')`将返回`/bar/baz`。
 
-If after processing all given `path` segments an absolute path has not yet
-been generated, the current working directory is used.
+如果所有路径片段都处理完了，但是还未生成绝对路径，则会使用当前的工作路径作为最后一个参数。
 
-The resulting path is normalized and trailing slashes are removed unless the
-path is resolved to the root directory.
+解析后的结果路径将被正常化(`path.normalize(path)`)，末尾的斜线将被移除，除非解析后的路径是根目录。
 
-Zero-length `path` segments are ignored.
+空的`path`段将被忽略。
 
-If no `path` segments are passed, `path.resolve()` will return the absolute path
-of the current working directory.
+如果没有传递路径段作为参数，`path.resolve()`方法将返回当前工作目录的绝对路径。
 
-For example:
+例:
 
 ```js
 path.resolve('/foo/bar', './baz')
@@ -453,7 +442,7 @@ path.resolve('wwwroot', 'static_files/png/', '../gif/image.gif')
 // this returns '/home/myself/node/wwwroot/static_files/gif/image.gif'
 ```
 
-A [`TypeError`][] is thrown if any of the arguments is not a string.
+如果一个参数不是字符串类型，将抛出一个[`TypeError`][]错误。
 
 ## path.sep
 <!-- YAML
@@ -462,19 +451,19 @@ added: v0.7.9
 
 * {String}
 
-Provides the platform-specific path segment separator:
+提供平台特定的路径段分隔符：
 
 * `\` on Windows
 * `/` on POSIX
 
-For example on POSIX:
+例，在POSIX系统中:
 
 ```js
 'foo/bar/baz'.split(path.sep)
 // Returns: ['foo', 'bar', 'baz']
 ```
 
-On Windows:
+在Windows系统中:
 
 ```js
 'foo\\bar\\baz'.split(path.sep)
@@ -488,12 +477,9 @@ added: v0.11.15
 
 * {Object}
 
-The `path.win32` property provides access to Windows-specific implementations
-of the `path` methods.
+`path.win32`属性提供了'针对Windows特别实现的`path`方法'的访问。
 
-*Note*: On Windows, both the forward slash (`/`) and backward slash (`\`)
-characters are accepted as path delimiters; however, only the backward slash
-(`\`) will be used in return values.
+*注意*：在Windows中，`/`和`\`都允许作为路径分隔符；但是，在返回值中只使用`\`。
 
 [`path.posix`]: #path_path_posix
 [`path.win32`]: #path_path_win32
