@@ -9,7 +9,7 @@
 ****
 
 * Globals
-* Modules(Not Finished)
+* Modules
 * OS
 * Path
 * Timers

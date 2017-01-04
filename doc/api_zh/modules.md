@@ -266,7 +266,7 @@ in main, a.done=true, b.done=true
 
 这是Node.js对package.json文件的感知程度。
 
-注意：如果由`package.json`的`"main"`条目指定的文件丢失，无法解析，Node.js会认为整个模块丢失，并报一个磨人错误：
+注意：如果由`package.json`的`"main"`条目指定的文件丢失，无法解析，Node.js会认为整个模块丢失，并报一个默认错误：
 
 ```txt
 Error: Cannot find module 'some-library'
@@ -281,71 +281,46 @@ Error: Cannot find module 'some-library'
 
 <!--type=misc-->
 
-If the module identifier passed to `require()` is not a
-[core](#modules_core_modules) module, and does not begin with `'/'`, `'../'`, or
-`'./'`, then Node.js starts at the parent directory of the current module, and
-adds `/node_modules`, and attempts to load the module from that location. Node
-will not append `node_modules` to a path already ending in `node_modules`.
+如果传递给`require()`方法的模块标识符既不是核心模块[core](#modules_core_modules)，也不以`'/'`, `'../'`,或`'./'`开头，那么Node.js会从当前模块的父目录开始，在其后添加`/node_modules`，然后尝试从该位置加载模块。Node.js不会在以`node_modules`结尾的路径上添加`node_modules`。
 
-If it is not found there, then it moves to the parent directory, and so
-on, until the root of the file system is reached.
+如果模块没有找到，Node.js会移动到父目录中查找，以此类推，直到文件系统的根目录。
 
-For example, if the file at `'/home/ry/projects/foo.js'` called
-`require('bar.js')`, then Node.js would look in the following locations, in
-this order:
+例如，如果`'/home/ry/projects/foo.js'`文件调用了`require('bar.js')`，Node.js将会依次在下面的路径中查找：
 
 * `/home/ry/projects/node_modules/bar.js`
 * `/home/ry/node_modules/bar.js`
 * `/home/node_modules/bar.js`
 * `/node_modules/bar.js`
 
-This allows programs to localize their dependencies, so that they do not
-clash.
+这允许程序本地化他们的依赖，使它们不冲突。
 
-You can require specific files or sub modules distributed with a module by
-including a path suffix after the module name. For instance
-`require('example-module/path/to/file')` would resolve `path/to/file`
-relative to where `example-module` is located. The suffixed path follows the
-same module resolution semantics.
+你可以通过在模块名后添加路径后缀来请求指定的文件或者发布在一个模块中的子模块。例如，`require('example-module/path/to/file')`将会相对于`example-module`的位置解析`path/to/file`。添加了后缀的路径遵循相同的模块解析语义。
 
-## Loading from the global folders
+## Loading from the global folders(从全局目录加载)
 
 <!-- type=misc -->
 
-If the `NODE_PATH` environment variable is set to a colon-delimited list
-of absolute paths, then Node.js will search those paths for modules if they
-are not found elsewhere.  (Note: On Windows, `NODE_PATH` is delimited by
-semicolons instead of colons.)
+当环境变量`NODE_PATH`被设置成一个冒号分隔的绝对路径列表，如果在别的地方没有找到模块，Node.js会在`NODE_PATH`声明的路径中查找这些模块。(注意：在Windows中，`NODE_PATH`使用分号做分隔符)
 
-`NODE_PATH` was originally created to support loading modules from
-varying paths before the current [module resolution][] algorithm was frozen.
+在现在的模块解析[module resolution][]算法锁定之前，`NODE_PATH`在最初设计时支持从不同的路径加载模块。
 
-`NODE_PATH` is still supported, but is less necessary now that the Node.js
-ecosystem has settled on a convention for locating dependent modules.
-Sometimes deployments that rely on `NODE_PATH` show surprising behavior
-when people are unaware that `NODE_PATH` must be set.  Sometimes a
-module's dependencies change, causing a different version (or even a
-different module) to be loaded as the `NODE_PATH` is searched.
+Node.js仍然支持`NODE_PATH`，但是没有那么必要了，Node.js的生态系统已经建立了定位依赖模块的惯例。当大家不知道必须设置`NODE_PATH`时，有时依赖`NODE_PATH`的部署会有奇怪的表现。有时一个模块的依赖改变了，由于搜索了`NODE_PATH`中的路径，会导致不同版本的模块(甚至不同的模块)被加载。
 
-Additionally, Node.js will search in the following locations:
+此外，Node.js还将从下面的路径中查找：
 
 * 1: `$HOME/.node_modules`
 * 2: `$HOME/.node_libraries`
 * 3: `$PREFIX/lib/node`
 
-Where `$HOME` is the user's home directory, and `$PREFIX` is Node.js's
-configured `node_prefix`.
+`$HOME`是用户的家目录，`$PREFIX`是Node.js配置的`node_prefix`。
 
-These are mostly for historic reasons.  **You are highly encouraged
-to place your dependencies locally in `node_modules` folders.**  They
-will be loaded faster, and more reliably.
+上面情况的产生有其历史原因。**我们强烈建议将你的依赖放在`node_modules`目录中**，这样加载更快，也更可靠。
 
 ## The module wrapper
 
 <!-- type=misc -->
 
-Before a module's code is executed, Node.js will wrap it with a function
-wrapper that looks like the following:
+在一个模块的代码执行之前，Node.js将会使用一个类似于下面的函数包裹层将代码包裹起来：
 
 ```js
 (function (exports, require, module, __filename, __dirname) {
@@ -353,16 +328,12 @@ wrapper that looks like the following:
 });
 ```
 
-By doing this, Node.js achieves a few things:
+通过这样做，Node.js可以实现下面几件事情：
 
-- It keeps top-level variables (defined with `var`, `const` or `let`) scoped to
-the module rather than the global object.
-- It helps to provide some global-looking variables that are actually specific
-to the module, such as:
-  - The `module` and `exports` objects that the implementor can use to export
-  values from the module.
-  - The convenience variables `__filename` and `__dirname`, containing the
-  module's absolute filename and directory path.
+- 它将顶级变量(通过`var`, `const`或`let`关键字声明)的作用域限制在模块中而不会泄漏到全局对象
+- 它帮助提供看来是全局变量实际上是具体到模块的变量，例如
+  - `module`和`exports`对象的实例可用来从模块中导出值(values，指模块中所有可导出的东西)
+  - 便利的`__filename`和`__dirname`变量，包含了模块的绝对文件名和绝对文件路径
 
 ## The `module` Object
 <!-- YAML
@@ -374,10 +345,7 @@ added: v0.1.16
 
 * {Object}
 
-In each module, the `module` free variable is a reference to the object
-representing the current module.  For convenience, `module.exports` is
-also accessible via the `exports` module-global. `module` isn't actually
-a global but rather local to each module.
+在每个模块中，`module`这个自由变量都是代表当前模块的对象的引用。为了方便，`module.exports`也可以通过`exports`获取。`module`并不是真正的全局变量，而是定位在每个模块中的。
 
 ### module.children
 <!-- YAML
@@ -386,7 +354,7 @@ added: v0.1.16
 
 * {Array}
 
-The module objects required by this one.
+当前模块需要的模块对象。
 
 ### module.exports
 <!-- YAML
@@ -395,13 +363,11 @@ added: v0.1.16
 
 * {Object}
 
-The `module.exports` object is created by the Module system. Sometimes this is
-not acceptable; many want their module to be an instance of some class. To do
-this, assign the desired export object to `module.exports`. Note that assigning
-the desired object to `exports` will simply rebind the local `exports` variable,
-which is probably not what you want to do.
+`module.exports`对象是模块系统创建的。有时这是不可接受的；许多人想要他们的模块是一个类的实例。为了实现这个需求，将想要导出的地嗅香赋值给`module.exports`。注意，将想要的导出的对象赋值给`exports`只会简单的重新绑定`exports`变量的指向，这可能不是你想要的。
 
-For example suppose we were making a module called `a.js`
+**译注：真正指向模块本身导出项的是`module.exports`，而`exports`只是指向`module.exports`，所以如果只是简单的将一个对象赋值给`exports`变量，那么只是将`exports`变量指向了别的对象，而`module.exports`的指向还是当前模块的导出，所以该模块的导出项为空。**
+
+例，假设我们正在创建一个`a.js`的模块
 
 ```js
 const EventEmitter = require('events');
@@ -415,7 +381,7 @@ setTimeout(() => {
 }, 1000);
 ```
 
-Then in another file we could do
+在另外一个文件中：
 
 ```js
 const a = require('./a');
@@ -424,9 +390,7 @@ a.on('ready', () => {
 });
 ```
 
-
-Note that assignment to `module.exports` must be done immediately. It cannot be
-done in any callbacks.  This does not work:
+注意，`module.exports`的赋值必须立即完成。不能在任何回调中做这项工作，下面的例子不会工作：
 
 x.js:
 
@@ -443,46 +407,39 @@ const x = require('./x');
 console.log(x.a);
 ```
 
-#### exports shortcut
+#### exports shortcut(快捷方式)
 <!-- YAML
 added: v0.1.16
 -->
 
-The `exports` variable is available within a module's file-level scope, and is
-assigned the value of `module.exports` before the module is evaluated.
+`exports`变量只在模块的文件级范围内可用，并且在在模块被执行之前就被赋予了`module.exports`的值。
 
-It allows a shortcut, so that `module.exports.f = ...` can be written more
-succinctly as `exports.f = ...`. However, be aware that like any variable, if a
-new value is assigned to `exports`, it is no longer bound to `module.exports`:
+`module`允许一个快捷方式，以便于`module.exports.f = ...`可以更简洁地写为`exports.f = ...`。但是，需要注意的是，像其他所有的变量一样，如果`exports`被赋了新值，它将不再和`module.exports`绑定(译注：即`exports`将指向别的内存空间，而不再和`module.exports`指向同一块内存空间，所以建议在调用的时候使用`exports`，在赋值的时候使用`module.exports`)。
 
 ```js
-module.exports.hello = true; // Exported from require of module
-exports = { hello: false };  // Not exported, only available in the module
+module.exports.hello = true; // 在被需要(`require`)时导出
+exports = { hello: false };  // 不会被导出，只在该模块中有效，外部无法访问
 ```
 
-When the `module.exports` property is being completely replaced by a new
-object, it is common to also reassign `exports`, for example:
+当`module.exports`属性被一个新对象完全替换时，通常也会重新给`exports`赋值，例如：
 
 ```js
 module.exports = exports = function Constructor() {
     // ... etc.
 ```
 
-To illustrate the behavior, imagine this hypothetical implementation of
-`require()`, which is quite similar to what is actually done by `require()`:
+为了说明这种行为，想象这种假想的`require()`实现，实际上它和`require()`的行为是相似的。
 
 ```js
 function require(...) {
   var module = { exports: {} };
   ((module, exports) => {
-    // Your module code here. In this example, define a function.
+    // 模块代码写在这里。在这个例子中，定义一个方法
     function some_func() {};
     exports = some_func;
-    // At this point, exports is no longer a shortcut to module.exports, and
-    // this module will still export an empty default object.
+    // 这时，exports不再是module.exports的快捷方式，该模块仍然导出一个空的默认对象
     module.exports = some_func;
-    // At this point, the module will now export some_func, instead of the
-    // default object.
+    // 这时，模块将导出some_func，不再是默认对象。
   })(module, module.exports);
   return module.exports;
 }
@@ -495,7 +452,7 @@ added: v0.1.16
 
 * {String}
 
-The fully resolved filename to the module.
+模块完全解析后的文件名。
 
 ### module.id
 <!-- YAML
@@ -504,8 +461,7 @@ added: v0.1.16
 
 * {String}
 
-The identifier for the module.  Typically this is the fully resolved
-filename.
+模块标识符。通常是完全解析后的文件名。
 
 ### module.loaded
 <!-- YAML
@@ -514,8 +470,7 @@ added: v0.1.16
 
 * {Boolean}
 
-Whether or not the module is done loading, or is in the process of
-loading.
+模块是否完成加载，或是正在加载中。
 
 ### module.parent
 <!-- YAML
@@ -524,7 +479,7 @@ added: v0.1.16
 
 * {Object} Module object
 
-The module that first required this one.
+第一次请求加载该模块的模块。
 
 ### module.require(id)
 <!-- YAML
@@ -532,15 +487,13 @@ added: v0.5.1
 -->
 
 * `id` {String}
-* Returns: {Object} `module.exports` from the resolved module
+* Returns: {Object} 解析后的模块中的`module.exports`
 
-The `module.require` method provides a way to load a module as if
-`require()` was called from the original module.
+`module.require`方法提供了模仿从原始模块中调用`require()`加载模块的方法。
 
-Note that in order to do this, you must get a reference to the `module`
-object.  Since `require()` returns the `module.exports`, and the `module` is
-typically *only* available within a specific module's code, it must be
-explicitly exported in order to be used.
+注意，为了这样做，你必须获取`module`对象的引用。因为`require()`方法返回`module.exports`，并且`module`通常只在特定的模块代码中可用，所以它(`module`)必须显示导出以便使用。
+
+**译注：注意查看前面的文档，在模块中`module`对象指向模块本身。**
 
 [`Error`]: errors.html#errors_class_error
 [module resolution]: #modules_all_together
