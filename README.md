@@ -8,6 +8,7 @@
 
 ****
 
+* Errors(Not Finished)
 * Globals
 * Modules
 * OS
