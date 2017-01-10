@@ -2,30 +2,22 @@
 
 <!--type=misc-->
 
-Applications running in Node.js will generally experience four categories of
-errors:
+Node.js中运行的应用程序通常会遇到四类错误：
 
-- Standard JavaScript errors such as:
-  - {EvalError} : thrown when a call to `eval()` fails.
-  - {SyntaxError} : thrown in response to improper JavaScript language
-    syntax.
-  - {RangeError} : thrown when a value is not within an expected range
-  - {ReferenceError} : thrown when using undefined variables
-  - {TypeError} : thrown when passing arguments of the wrong type
-  - {URIError} : thrown when a global URI handling function is misused.
-- System errors triggered by underlying operating system constraints such
-  as attempting to open a file that does not exist, attempting to send data
-  over a closed socket, etc;
-- And User-specified errors triggered by application code.
-- Assertion Errors are a special class of error that can be triggered whenever
-  Node.js detects an exceptional logic violation that should never occur. These
-  are raised typically by the `assert` module.
+- 标准JavaScript错误，例如：
+  - {EvalError} : 调用`eval()`失败时抛出
+  - {SyntaxError} : 在响应不正确的JavaScript语言语法时抛出
+  - {RangeError} : 当一个值超出预期范围时抛出
+  - {ReferenceError} : 当使用未定义的变量时抛出
+  - {TypeError} : 当传递的参数类型错误时抛出
+  - {URIError} : 当全局URI处理函数被误用时抛出
+- 由底层操作系统约束(例如尝试打开一个不存在的文件，尝试通过已经关闭的套接字发送数据等)触发的系统错误。
+- 应用程序触发的用户指定的错误。
+- 断言错误是一种特殊类型的错误，只要Node.js检测到不应该发生的异常逻辑违例，就会触发该类错误。这些错误通常是由`assert`模块产生的。
 
-All JavaScript and System errors raised by Node.js inherit from, or are
-instances of, the standard JavaScript {Error} class and are guaranteed
-to provide *at least* the properties available on that class.
+Node.js产生的所有的JavaScript和系统错误都继承自或者是标准Javascript {Error}类的实例，并且保证这些错误*至少*提供在该类中可用的属性。
 
-## Error Propagation and Interception
+## Error Propagation and Interception(错误传播和拦截)
 
 <!--type=misc-->
 
