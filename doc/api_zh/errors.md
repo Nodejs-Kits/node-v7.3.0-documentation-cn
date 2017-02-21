@@ -21,15 +21,9 @@ Node.js产生的所有的JavaScript和系统错误都继承自或者是标准Jav
 
 <!--type=misc-->
 
-Node.js supports several mechanisms for propagating and handling errors that
-occur while an application is running. How these errors are reported and
-handled depends entirely on the type of Error and the style of the API that is
-called.
+Node.js支持几种机制来传播和处理应用运行时发生的错误。如何报告和处理这些错误取决于错误的类型和API的调用方式。
 
-All JavaScript errors are handled as exceptions that *immediately* generate
-and throw an error using the standard JavaScript `throw` mechanism. These
-are handled using the [`try / catch` construct][try-catch] provided by the JavaScript
-language.
+所有的JavaScript错误都作为异常(使用标准的JavaScript`throw`机制*立即*生成并抛出)处理。这些是使用JavaScript提供的[`try / catch` construct][try-catch]来处理的。
 
 ```js
 // Throws with a ReferenceError because z is undefined
@@ -41,20 +35,13 @@ try {
 }
 ```
 
-Any use of the JavaScript `throw` mechanism will raise an exception that
-*must* be handled using `try / catch` or the Node.js process will exit
-immediately.
+每次使用JavaScript的`throw`机制都会引发一个异常，*必须*使用`try / catch`来处理，否则Node.js进程将立即退出。
 
-With few exceptions, _Synchronous_ APIs (any blocking method that does not
-accept a `callback` function, such as [`fs.readFileSync`][]), will use `throw`
-to report errors.
+除了少数例外，_Synchronous_ APIs(任何不接受`callback`的阻塞方法)将使用`throw`来报告错误。
 
-Errors that occur within _Asynchronous APIs_ may be reported in multiple ways:
+在_Asynchronous APIs_中产生的错误可能以多种方式来报告：
 
-- Most asynchronous methods that accept a `callback` function will accept an
-  `Error` object passed as the first argument to that function. If that first
-  argument is not `null` and is an instance of `Error`, then an error occurred
-  that should be handled.
+- 大部分接受`callback`函数的异步方法将会接受一个`Error`对象，作为第一个参数传递给异步方法。如果第一个参数不是`null`并且是一个`Error`的实例，那么应该处理这个错误。
 
   ```js
   const fs = require('fs');
@@ -66,8 +53,7 @@ Errors that occur within _Asynchronous APIs_ may be reported in multiple ways:
     // Otherwise handle the data
   });
   ```
-- When an asynchronous method is called on an object that is an `EventEmitter`,
-  errors can be routed to that object's `'error'` event.
+- 当一个异步方法是在一个`EventEmitter`对象上调用时，错误可以路由到该对象的`'error'`事件。
 
   ```js
   const net = require('net');
